@@ -12,7 +12,7 @@ public class LoanCalc {
 		double loan = Double.parseDouble(args[0]);
 		double rate = Double.parseDouble(args[1]);
 		int n = Integer.parseInt(args[2]);
-		System.out.println("Loan = " + loan + ", interest rate = " + rate + "%, periods = " + n);
+		//System.out.println("Loan = " + loan + ", interest rate = " + rate + "%, periods = " + n);
 
 		// Computes the periodical payment using brute force search
 		System.out.print("\nPeriodical payment, using brute force: ");
@@ -24,7 +24,7 @@ public class LoanCalc {
 		System.out.println((int) bisectionSolver(loan, rate, n, epsilon));
 		System.out.println("number of iterations: " + iterationCounter);
 
-		//bisectionSolver(loan, rate, n, epsilon);
+		
 
 
 	}
@@ -39,13 +39,6 @@ public class LoanCalc {
 			loan = (loan - payment) * rate;
 		}
 		return loan;
-		//while(loan > payment){
-		//	System.out.println(loan);
-		//	loan = (loan - payment) * rate;
-		//	if (loan <= payment) {
-		//		loop = false;
-		//	}
-		//}
 	}
 	
 	// Uses sequential search to compute an approximation of the periodical payment
@@ -56,17 +49,12 @@ public class LoanCalc {
     public static double bruteForceSolver(double loan, double rate, int n, double epsilon) {
 		iterationCounter = 0;
 		boolean loop = true;
-		double increment = 0.0001;
-		double value = 0;
-		while(loop){
+		double value = loan/n;
+		while(endBalance(loan, rate, n, value) >= epsilon){
 
-			if(endBalance(loan, rate, n, value) > epsilon){
-				value = value + increment;
-			}
-			else {
-				loop = false;
-			}
+			value += epsilon;
 			iterationCounter++;
+			//System.out.println(endBalance(loan, rate, n, value));
 		}
 		return value;
     }
@@ -78,13 +66,9 @@ public class LoanCalc {
 	// Side effect: modifies the class variable iterationCounter.
     public static double bisectionSolver(double loan, double rate, int n, double epsilon) {  
         iterationCounter = 0;
-		double L = 0.0, H = loan;
+		double L = (loan / n), H = loan;
 		double value = (L + H) / 2.0;
-		boolean loop = true;
-		while(loop){
-		//for(int i = 0;i < 50;i++){
-			//System.err.println(endBalance(loan, rate, n, value));
-			//System.err.println(value + " " + endBalance(loan, rate, n, value));
+		while((H - L) > epsilon){
 			if(loan - endBalance(loan, rate, n, value) > loan - epsilon){
 				H = value;
 			}
@@ -93,9 +77,6 @@ public class LoanCalc {
 			}
 			value = (L + H) / 2.0;
 			iterationCounter++;
-			if(endBalance(loan, rate, n, value) < epsilon && endBalance(loan, rate, n, value) > -epsilon){
-				loop = false;
-			}
 		}
 		return value;
     }
