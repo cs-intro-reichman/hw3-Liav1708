@@ -56,12 +56,12 @@ public class LoanCalc {
     public static double bruteForceSolver(double loan, double rate, int n, double epsilon) {
 		iterationCounter = 0;
 		boolean loop = true;
-		double increment = 0.001;
+		double increment = 0.0001;
 		double value = 0;
 		while(loop){
 
-			if(endBalance(loan, rate, n, value) > 0){
-				value = value + epsilon;
+			if(endBalance(loan, rate, n, value) > epsilon){
+				value = value + increment;
 			}
 			else {
 				loop = false;
