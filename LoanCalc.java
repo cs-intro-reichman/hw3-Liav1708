@@ -23,13 +23,29 @@ public class LoanCalc {
 		System.out.print("\nPeriodical payment, using bi-section search: ");
 		System.out.println((int) bisectionSolver(loan, rate, n, epsilon));
 		System.out.println("number of iterations: " + iterationCounter);
+
+		//bisectionSolver(loan, rate, n, epsilon);
+
+
 	}
 
 	// Computes the ending balance of a loan, given the loan amount, the periodical
 	// interest rate (as a percentage), the number of periods (n), and the periodical payment.
 	private static double endBalance(double loan, double rate, int n, double payment) {	
-		// Replace the following statement with your code
-		return 0;
+		rate = (rate + 100.0) / 100.0;
+
+		for (int i = 0; i < n; i++){
+
+			loan = (loan - payment) * rate;
+		}
+		return loan;
+		//while(loan > payment){
+		//	System.out.println(loan);
+		//	loan = (loan - payment) * rate;
+		//	if (loan <= payment) {
+		//		loop = false;
+		//	}
+		//}
 	}
 	
 	// Uses sequential search to compute an approximation of the periodical payment
@@ -38,8 +54,21 @@ public class LoanCalc {
 	// the number of periods (n), and epsilon, the approximation's accuracy
 	// Side effect: modifies the class variable iterationCounter.
     public static double bruteForceSolver(double loan, double rate, int n, double epsilon) {
-		// Replace the following statement with your code
-		return 0;
+		iterationCounter = 0;
+		boolean loop = true;
+		double increment = 0.001;
+		double value = 0;
+		while(loop){
+
+			if(endBalance(loan, rate, n, value) > 0){
+				value = value + epsilon;
+			}
+			else {
+				loop = false;
+			}
+			iterationCounter++;
+		}
+		return value;
     }
     
     // Uses bisection search to compute an approximation of the periodical payment 
@@ -48,7 +77,26 @@ public class LoanCalc {
 	// the number of periods (n), and epsilon, the approximation's accuracy
 	// Side effect: modifies the class variable iterationCounter.
     public static double bisectionSolver(double loan, double rate, int n, double epsilon) {  
-        // Replace the following statement with your code
-		return 0;
+        iterationCounter = 0;
+		double L = 1.0, H = loan;
+		double value = (L + H) / 2.0;
+		boolean loop = true;
+		while(loop){
+		//for(int i = 0;i < 50;i++){
+			//System.err.println(endBalance(loan, rate, n, value));
+			//System.err.println(value + " " + endBalance(loan, rate, n, value));
+			if(loan - endBalance(loan, rate, n, value) > loan - epsilon){
+				H = value;
+			}
+			else{
+				L = value;
+			}
+			value = (L + H) / 2.0;
+			iterationCounter++;
+			if(endBalance(loan, rate, n, value) < epsilon && endBalance(loan, rate, n, value) > -epsilon){
+				loop = false;
+			}
+		}
+		return value;
     }
 }
